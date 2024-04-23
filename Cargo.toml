@@ -31,7 +31,8 @@ log = "0.4"
 version = "0.7"
 default-features = false
 features = [
-"runtime-tokio-tls",
+"runtime-tokio",
+"tls-rustls",
 "macros",
 "postgres",
 "uuid",
