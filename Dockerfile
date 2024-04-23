@@ -1,4 +1,4 @@
-FROM rust:1.75.0 as builder
+FROM rust:1.75-slim-bullseye as builder
 
 RUN apt update \
     && apt install lld clang postgresql-client -y \
