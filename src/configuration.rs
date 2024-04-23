@@ -3,7 +3,13 @@ use config::Config;
 #[derive(serde::Deserialize)]
 pub struct Settings {
     pub database: DatabaseSettings,
-    pub application_port: u16,
+    pub application: ApplicationSettings,
+}
+
+#[derive(serde::Deserialize)]
+pub struct ApplicationSettings {
+    pub port: u16,
+    pub host: String,
 }
 
 #[derive(serde::Deserialize)]
@@ -31,8 +37,17 @@ impl DatabaseSettings {
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
+    let environment: String = std::env::var("APP_ENVIRONMENT")
+        .unwrap_or_else(|_| "local".into())
+        .try_into()
+        .expect("Failed to parse APP_ENVIRONMENT");
+
     let settings = Config::builder()
         .add_source(config::File::with_name("configuration"))
+        .add_source(config::File::with_name(&format!(
+            "configuration-{}",
+            environment
+        )))
         .build()?;
 
     settings.try_deserialize()
